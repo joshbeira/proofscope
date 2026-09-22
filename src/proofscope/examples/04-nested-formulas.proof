@@ -1,0 +1,8 @@
+# Build a conditional from a compound assumption.
+DERIVE (ready AND (healthy OR cached)) -> ready
+
+ASSUME ready AND (healthy OR cached)
+    APPLY AND_ELIM ready AND (healthy OR cached), ready
+END
+APPLY IMP_INTRO ready AND (healthy OR cached), ready
+CONCLUDE

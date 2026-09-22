@@ -1,0 +1,14 @@
+# Either route establishes the same delivery guarantee.
+GIVEN primary OR fallback
+GIVEN primary -> delivered
+GIVEN fallback -> delivered
+DERIVE delivered
+
+ASSUME primary
+    APPLY IMP_ELIM primary -> delivered, primary
+END
+ASSUME fallback
+    APPLY IMP_ELIM fallback -> delivered, fallback
+END
+APPLY OR_CASES primary OR fallback, delivered
+CONCLUDE

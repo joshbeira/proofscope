@@ -1,0 +1,8 @@
+# Inconsistent premises entail every formula in classical logic.
+GIVEN safe
+GIVEN NOT safe
+DERIVE alarm
+
+APPLY NOT_ELIM safe, NOT safe
+APPLY EXPLOSION FALSE, alarm
+CONCLUDE

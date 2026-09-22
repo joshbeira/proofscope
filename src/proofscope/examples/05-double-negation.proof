@@ -1,0 +1,6 @@
+# Double negation is an explicit classical inference.
+GIVEN NOT NOT available
+DERIVE available
+
+APPLY DNE NOT NOT available
+CONCLUDE

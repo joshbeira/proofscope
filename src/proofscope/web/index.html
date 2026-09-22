@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#172d2b" />
+    <title>ProofScope · Proof explorer</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="rail" aria-label="ProofScope identity">
+      <a class="mark" href="/" aria-label="ProofScope home">⊢</a>
+      <span class="rail-word">PROOFSCOPE</span>
+      <span class="rail-bottom">v1.0</span>
+    </aside>
+    <div class="shell">
+      <header class="topbar">
+        <a class="brand" href="/"
+          >ProofScope<span> / </span><span>Explorer</span></a
+        >
+        <div class="toplinks">
+          <span class="local"><i></i> Local Python engine</span>
+          <a
+            href="https://github.com/joshbeira/proofscope"
+            target="_blank"
+            rel="noreferrer"
+            >GitHub ↗</a
+          >
+        </div>
+      </header>
+      <main>
+        <section class="intro">
+          <div>
+            <p class="eyebrow">A WORKBENCH FOR PROPOSITIONAL LOGIC</p>
+            <h1>Reason, made explicit<span>.</span></h1>
+            <p class="subtitle">
+              Write a proof. Inspect every inference. Find where the logic
+              breaks.
+            </p>
+          </div>
+          <div class="intro-note">
+            <span>01 / VERIFY</span>
+            <p>Small steps.<br />Checkable conclusions.</p>
+          </div>
+        </section>
+        <section class="workspace" aria-label="Proof workspace">
+          <div class="workspace-bar">
+            <div class="file-title">
+              <span class="file-icon">⊢</span
+              ><strong id="filename">contraposition.proof</strong>
+              <span class="file-type">PROOF</span>
+            </div>
+            <div class="file-actions">
+              <label for="examples" class="sr-only"
+                >Load an example proof</label
+              >
+              <select id="examples">
+                <option value="">Example library</option>
+              </select>
+              <button id="download" class="quiet">Export ↓</button>
+              <button id="new" class="quiet">New +</button>
+            </div>
+          </div>
+          <div class="panes">
+            <section class="editor-pane" aria-label="Proof editor">
+              <div class="pane-heading">
+                <span>SOURCE</span
+                ><span class="syntax-label">Natural deduction</span>
+              </div>
+              <div class="editor-wrap">
+                <div id="line-numbers" aria-hidden="true"></div>
+                <label class="sr-only" for="source">Proof source</label>
+                <textarea
+                  id="source"
+                  spellcheck="false"
+                  autocapitalize="off"
+                  autocomplete="off"
+                  aria-describedby="editor-help"
+                ></textarea>
+              </div>
+              <div class="editor-footer">
+                <span id="editor-help"
+                  >UTF-8 <span class="dot">·</span> Ctrl / ⌘ + Enter to
+                  verify</span
+                >
+                <button id="verify" class="primary">
+                  Verify proof <span>↗</span>
+                </button>
+              </div>
+            </section>
+            <section class="results-pane" aria-label="Verification results">
+              <div class="tabs" role="tablist" aria-label="Result views">
+                <button
+                  id="tab-trace"
+                  role="tab"
+                  aria-controls="trace-panel"
+                  aria-selected="true"
+                  data-tab="trace"
+                >
+                  Proof trace
+                </button>
+                <button
+                  id="tab-models"
+                  role="tab"
+                  aria-controls="models-panel"
+                  aria-selected="false"
+                  data-tab="models"
+                  tabindex="-1"
+                >
+                  Model check
+                </button>
+                <button
+                  id="tab-reference"
+                  role="tab"
+                  aria-controls="reference-panel"
+                  aria-selected="false"
+                  data-tab="reference"
+                  tabindex="-1"
+                >
+                  Rulebook
+                </button>
+              </div>
+              <div
+                id="status"
+                class="status neutral"
+                role="status"
+                aria-live="polite"
+              >
+                Ready to verify
+              </div>
+              <div
+                id="trace-panel"
+                role="tabpanel"
+                aria-labelledby="tab-trace"
+                class="panel"
+              >
+                <div class="panel-description">
+                  <strong>Follow the argument</strong
+                  ><span>Click a step to inspect its dependencies.</span>
+                </div>
+                <div id="diagnostics"></div>
+                <div id="trace" class="trace-list"></div>
+                <div id="scrubber" class="scrubber" hidden>
+                  <label for="step"
+                    >Walk through the proof <span id="step-label"></span
+                  ></label>
+                  <input id="step" type="range" min="1" max="1" value="1" />
+                </div>
+                <p id="selection-note" class="selection-note"></p>
+              </div>
+              <div
+                id="models-panel"
+                role="tabpanel"
+                aria-labelledby="tab-models"
+                class="panel"
+                hidden
+              >
+                <div id="model-summary" class="model-summary">
+                  Verify a proof to analyze its premises and goal.
+                </div>
+                <div id="countermodel"></div>
+                <div id="truth-table" class="table-wrap"></div>
+              </div>
+              <div
+                id="reference-panel"
+                role="tabpanel"
+                aria-labelledby="tab-reference"
+                class="panel"
+                hidden
+              >
+                <div class="panel-description">
+                  <strong>The rulebook</strong
+                  ><span
+                    >A and B may be nested formulas. All required evidence must
+                    be in scope.</span
+                  >
+                </div>
+                <div id="rules" class="rule-list"></div>
+              </div>
+            </section>
+          </div>
+          <div class="metrics" aria-label="Proof statistics">
+            <div>
+              <span>INFERENCES</span><strong id="metric-inferences">—</strong>
+            </div>
+            <div>
+              <span>PREMISES</span><strong id="metric-premises">—</strong>
+            </div>
+            <div>
+              <span>MAX SCOPE DEPTH</span
+              ><strong id="metric-max_depth">—</strong>
+            </div>
+            <div>
+              <span>TRUTH ASSIGNMENTS</span
+              ><strong id="metric-models">—</strong>
+            </div>
+            <p>
+              Every claim has a trail.<br /><span
+                >Every assumption has a boundary.</span
+              >
+            </p>
+          </div>
+        </section>
+        <section class="explainer">
+          <span class="tiny-mark">⊨</span>
+          <p>
+            <strong>Two perspectives. One argument.</strong> The proof checker
+            validates your steps. The model checker independently tests whether
+            your premises entail your goal, up to 12 atoms.
+          </p>
+          <span class="privacy"
+            >Runs on your machine.<br />No accounts. No external services.</span
+          >
+        </section>
+      </main>
+      <footer>
+        <span
+          >PROOFSCOPE <span class="footer-slash">/</span> MAKE EVERY INFERENCE
+          EXPLICIT</span
+        ><span>Classical propositional logic</span>
+      </footer>
+    </div>
+  </body>
+</html>

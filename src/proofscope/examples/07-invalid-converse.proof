@@ -1,0 +1,7 @@
+# Intentionally invalid: the converse of an implication need not hold.
+GIVEN cached -> fast
+GIVEN fast
+DERIVE cached
+
+APPLY IMP_ELIM cached -> fast, fast
+CONCLUDE

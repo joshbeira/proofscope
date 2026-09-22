@@ -1,0 +1,10 @@
+# Intentionally invalid: debug mode cannot justify a global guarantee.
+DERIVE request -> authorized
+
+ASSUME request
+    ASSUME authorized
+        APPLY REITERATE authorized
+    END
+END
+APPLY IMP_INTRO request, authorized
+CONCLUDE

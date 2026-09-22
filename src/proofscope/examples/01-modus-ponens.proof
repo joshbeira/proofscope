@@ -1,0 +1,7 @@
+# Access is granted only when authentication succeeds.
+GIVEN authenticated
+GIVEN authenticated -> access_granted
+DERIVE access_granted
+
+APPLY IMP_ELIM authenticated, authenticated -> access_granted
+CONCLUDE

@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proofscope"
+version = "1.0.0"
+description = "Explainable propositional proof verification, scope tracing, and countermodel analysis."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "Josh Beira"}]
+keywords = ["logic", "natural-deduction", "formal-methods", "proof-checker", "parser"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Interpreters",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["ruff>=0.11,<1", "coverage>=7.10.3,<8", "build>=1,<2"]
+
+[project.scripts]
+proofscope = "proofscope.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/joshbeira/proofscope"
+Issues = "https://github.com/joshbeira/proofscope/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+proofscope = ["web/*.html", "web/*.css", "web/*.js", "examples/*.proof", "py.typed"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.coverage.run]
+source = ["proofscope"]
+patch = ["subprocess"]
+relative_files = true
+
+[tool.coverage.report]
+show_missing = true

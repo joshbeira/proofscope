@@ -1,0 +1,13 @@
+# If a deployment passes, its checks must have passed.
+GIVEN deployed -> checks_passed
+DERIVE NOT checks_passed -> NOT deployed
+
+ASSUME NOT checks_passed
+    ASSUME deployed
+        APPLY IMP_ELIM deployed, deployed -> checks_passed
+        APPLY NOT_ELIM checks_passed, NOT checks_passed
+    END
+    APPLY NOT_INTRO deployed
+END
+APPLY IMP_INTRO NOT checks_passed, NOT deployed
+CONCLUDE
