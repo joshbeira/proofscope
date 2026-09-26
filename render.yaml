@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: joshbeira-proofscope
+    runtime: python
+    plan: free
+    branch: codex/free-hosting
+    buildCommand: pip install -r requirements-hosting.txt
+    startCommand: gunicorn hosted:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 60
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.12

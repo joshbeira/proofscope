@@ -19,7 +19,7 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["ruff>=0.11,<1", "coverage>=7.10.3,<8", "build>=1,<2"]
+dev = ["ruff>=0.11,<1", "coverage>=7.10.3,<8", "build>=1,<2", "Flask>=3.1.3,<4"]
 
 [project.scripts]
 proofscope = "proofscope.cli:main"
