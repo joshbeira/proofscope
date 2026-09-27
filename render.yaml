@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: joshbeira-proofscope
+    name: proofscope
     runtime: python
     plan: free
     branch: codex/free-hosting
