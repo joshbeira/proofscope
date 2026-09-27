@@ -24,12 +24,17 @@ def same_origin():
 
 @app.after_request
 def headers(response):
-    response.headers.update({
-        "Cache-Control": "no-store",
-        "X-Content-Type-Options": "nosniff",
-        "X-Frame-Options": "DENY",
-        "Content-Security-Policy": "default-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'",
-    })
+    response.headers.update(
+        {
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+            "X-Frame-Options": "DENY",
+            "Content-Security-Policy": (
+                "default-src 'self'; style-src 'self'; script-src 'self'; "
+                "connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'"
+            ),
+        }
+    )
     return response
 
 
@@ -39,16 +44,27 @@ def assets(asset="index.html"):
     types = {"index.html": "text/html", "app.js": "text/javascript", "style.css": "text/css"}
     if asset not in types:
         abort(404)
-    return app.response_class(files("proofscope").joinpath("web", asset).read_bytes(), mimetype=types[asset])
+    content = files("proofscope").joinpath("web", asset).read_bytes()
+    if asset == "index.html":
+        content = content.replace(b"Local Python engine", b"Hosted Python engine")
+        content = content.replace(
+            b"Runs on your machine.<br />No accounts. No external services.",
+            b"Proofs are checked on this server.<br />No account required.",
+        )
+    return app.response_class(content, mimetype=types[asset])
 
 
 @app.get("/api/examples")
 def examples():
-    return jsonify([
-        {"name": path.name.removesuffix(".proof"), "source": path.read_text("utf-8")}
-        for path in sorted(files("proofscope").joinpath("examples").iterdir(), key=lambda p: p.name)
-        if path.name.endswith(".proof")
-    ])
+    return jsonify(
+        [
+            {"name": path.name.removesuffix(".proof"), "source": path.read_text("utf-8")}
+            for path in sorted(
+                files("proofscope").joinpath("examples").iterdir(), key=lambda p: p.name
+            )
+            if path.name.endswith(".proof")
+        ]
+    )
 
 
 @app.post("/api/verify")

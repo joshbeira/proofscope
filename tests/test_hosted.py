@@ -19,7 +19,8 @@ class HostedTests(unittest.TestCase):
         examples = self.client.get("/api/examples", base_url=self.origin)
         self.assertTrue(examples.json)
         response = self.client.post(
-            "/api/verify", base_url=self.origin,
+            "/api/verify",
+            base_url=self.origin,
             json={"source": "GIVEN a\nDERIVE a\nCONCLUDE"},
             headers={"Origin": self.origin},
         )
@@ -27,20 +28,42 @@ class HostedTests(unittest.TestCase):
         self.assertIn("semantics", response.json)
 
     def test_foreign_origin_and_host_are_rejected(self):
-        self.assertEqual(self.client.post(
-            "/api/verify", base_url=self.origin, json={"source": ""},
-            headers={"Origin": "https://foreign.example.com"},
-        ).status_code, 403)
-        self.assertEqual(self.client.get("/", base_url="https://foreign.example.com").status_code, 400)
+        self.assertEqual(
+            self.client.post(
+                "/api/verify",
+                base_url=self.origin,
+                json={"source": ""},
+                headers={"Origin": "https://foreign.example.com"},
+            ).status_code,
+            403,
+        )
+        self.assertEqual(
+            self.client.get("/", base_url="https://foreign.example.com").status_code, 400
+        )
 
     def test_bad_and_oversized_input(self):
-        self.assertEqual(self.client.post(
-            "/api/verify", base_url=self.origin, json={"source": 12},
-        ).status_code, 400)
-        self.assertEqual(self.client.post(
-            "/api/verify", base_url=self.origin, json={"source": "x" * 65537},
-        ).status_code, 413)
-        self.assertEqual(self.client.post(
-            "/api/verify", base_url=self.origin, data="x" * 300001,
-            content_type="application/json",
-        ).status_code, 413)
+        self.assertEqual(
+            self.client.post(
+                "/api/verify",
+                base_url=self.origin,
+                json={"source": 12},
+            ).status_code,
+            400,
+        )
+        self.assertEqual(
+            self.client.post(
+                "/api/verify",
+                base_url=self.origin,
+                json={"source": "x" * 65537},
+            ).status_code,
+            413,
+        )
+        self.assertEqual(
+            self.client.post(
+                "/api/verify",
+                base_url=self.origin,
+                data="x" * 300001,
+                content_type="application/json",
+            ).status_code,
+            413,
+        )
